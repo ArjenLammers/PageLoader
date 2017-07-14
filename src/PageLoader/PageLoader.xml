@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="PageLoader.widget.PageLoader" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>PageLoader</name>
+    <description>This widget loads another page where it's placed. Created to support recursive solutions.</description>
+
+    <icon />
+
+    <properties>
+        <property key="page" type="form" required="false">
+			<caption>Page</caption>
+			<category>Data source</category>
+			<description>The page to be loaded.</description>
+		</property>
+    </properties>
+</widget>
+
