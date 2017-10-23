@@ -36,6 +36,7 @@ define([
     return declare("PageLoader.widget.PageLoader", [ _WidgetBase ], {
         _contextObj: null,
         page: null,
+        _openedForm: null,
         
         // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
@@ -78,6 +79,7 @@ define([
         uninitialize: function () {
           logger.debug(this.id + ".uninitialize");
             // Clean up listeners, helper objects, etc. There is no need to remove listeners added with this.connect / this.subscribe / this.own.
+            this._openedForm.close();
         },
 
         // We want to stop events on a mobile device
@@ -94,6 +96,11 @@ define([
         _updateRendering: function (callback) {
             logger.debug(this.id + "._updateRendering");
             
+            if (this._openedForm !== null) {
+                this._openedForm.close();
+                this._openedForm = null;
+            }
+            
             if (this._contextObj !== null) {
                 dojoStyle.set(this.domNode, "display", "block");
                 mx.ui.openForm(this.page, {
@@ -101,7 +108,8 @@ define([
                     context: this.mxcontext,
                     error: function (err) {
                         console.error("PageLoader widget could not load the form: " + err);
-                    }
+                    },
+                    callback: $.proxy(this.formOpened, this)
                 });
             } else {
                 dojoStyle.set(this.domNode, "display", "none");
@@ -109,6 +117,10 @@ define([
 
             // The callback, coming from update, needs to be executed, to let the page know it finished rendering
             mendix.lang.nullExec(callback);
+        },
+        
+        formOpened: function(form) {
+            this._openedForm = form;
         },
 
         // Handle validations.
